@@ -16,7 +16,8 @@ export async function getUserLinks(req, res) {
       'visitCount', urls."visitCount"
     )) AS "shortenedUrls"
     FROM users
-    LEFT JOIN urls ON users.id = urls."userId"
+    LEFT JOIN urls 
+      ON users.id = urls."userId"
     WHERE users.id = $1
     GROUP BY users.id
     `, [session.userId])
