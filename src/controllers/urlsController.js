@@ -37,3 +37,19 @@ export async function getUrlById(req, res) {
     res.status(500).send(err.message)
   }
 }
+
+export async function openUrl(req, res) {
+  const {shortUrl} = req.params
+
+  try {
+    const link = await db.query('SELECT * FROM urls WHERE "shortenUrl" = $1', [shortUrl])
+
+    if (link.rowCount === 0) return res.sendStatus(404)
+
+    await db.query('UPDATE urls SET "visitCount" = $1 WHERE id = $2', [link.rows[0].visitCount + 1, link.rows[0].id])
+
+    res.redirect(link.rows[0].url)
+  } catch (err) {
+    res.status(500).send(err.message)
+  }
+}
